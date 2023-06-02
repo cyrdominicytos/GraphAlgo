@@ -1,0 +1,13 @@
+# Exclude Git repository metadata
+.git
+
+# Exclude IDE-specific settings
+.settings
+
+# Exclude compiled binary files
+bin
+target
+
+# Exclude IDE-specific project settings
+.classpath
+.project
