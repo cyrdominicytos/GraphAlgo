@@ -7,10 +7,14 @@ public class Edge {
 	private Node tail;
 	private Node head;
 	
+	//additionnal field
+	private String classification;
+	
 	public Edge(Node tailNode, Node headNode, int dist) {
 		distance = dist;
 		tail = tailNode;
 		head = headNode;
+		this.classification = "";
 	}
 	
 	public Node getTail() {
@@ -36,4 +40,14 @@ public class Edge {
 	public void setDistance(int dist) {
 		distance = dist;
 	}
+
+	public String getClassification() {
+		return classification;
+	}
+
+	public void setClassification(String classification) {
+		this.classification = classification;
+	}
+	
+	
 }
