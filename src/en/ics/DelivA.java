@@ -38,7 +38,6 @@ public class DelivA {
 	//               This is where your work starts
 	
 	private void runDelivA() {
-		System.out.println("Compaire" + "SF".compareTo("Sea"));
 		if(graph!=null)
 		{
 			ArrayList<Node> nodeList = graph.getNodeList();
