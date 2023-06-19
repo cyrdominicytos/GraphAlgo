@@ -52,7 +52,7 @@ public class DelivB {
 	        ArrayList<Node> nodes = graph.getNodeList();
 	        // Sort nodes alphabetically by name
 	        nodes.sort((node1, node2) -> {
-	                return node1.getName().compareTo(node2.getName());
+	                return node1.getName().compareToIgnoreCase(node2.getName());
 	        });
 	        //visit all remaining nodes
 	        for (Node node : nodes) {
@@ -101,7 +101,7 @@ public class DelivB {
 	        	if (edge1.getDistance() != edge2.getDistance()) {
 	                return Integer.compare(edge1.getDistance(), edge2.getDistance());
 	            } else {
-	                return edge1.getHead().getName().compareTo(edge2.getHead().getName());
+	                return edge1.getHead().getName().compareToIgnoreCase(edge2.getHead().getName());
 	            }
 	        });
 	        

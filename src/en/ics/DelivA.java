@@ -52,32 +52,52 @@ public class DelivA {
 	            outdegreeMap.put(node, outdegree);	
 	        }
 
-	        // Sort nodes based on indegree (descending), outdegree (descending), and abbreviation (ascending)
+	        // Sort nodes based on indegree (descending) and abbreviation (ascending)
 	        nodeList.sort((node1, node2) -> {
 	            int indegree1 = indegreeMap.get(node1);
 	            int indegree2 = indegreeMap.get(node2);
-	            int outdegree1 = outdegreeMap.get(node1);
-	            int outdegree2 = outdegreeMap.get(node2);
 	            String abbrev1 = node1.getAbbrev();
 	            String abbrev2 = node2.getAbbrev();
 
 	            if (indegree1 != indegree2) {
 	                return Integer.compare(indegree2, indegree1); // Sort by indegree (descending)
-	            } else if (outdegree1 != outdegree2) {
-	                return Integer.compare(outdegree2, outdegree1); // Sort by outdegree (descending)
 	            } else {
-	                return abbrev1.compareTo(abbrev2); // Sort alphabetically by abbreviation
+	                return abbrev1.compareToIgnoreCase(abbrev2); // Sort alphabetically by abbreviation
 	            }
 	        });
 
-	        // Print the nodes with their indegree and outdegree
+	        // Print nodes indegree
+	        System.out.println("Indegree");
+	        output.println("Indegree: ");
 	        for (Node node : nodeList) {
 	            int indegree = indegreeMap.get(node);
+	            String abbreviation = node.getAbbrev();
+	            System.out.printf("Node %s has indegree %d\n", abbreviation, indegree);
+	            output.println("Node "+abbreviation+" has indegree "+indegree);//Prints to file
+	            
+	        }
+	        
+	     // Sort nodes based on outdegree (descending) and abbreviation (ascending)
+	        nodeList.sort((node1, node2) -> {
+	            int outdegree1 = outdegreeMap.get(node1);
+	            int outdegree2 = outdegreeMap.get(node2);
+	            String abbrev1 = node1.getAbbrev();
+	            String abbrev2 = node2.getAbbrev();
+
+	            if (outdegree1 != outdegree2) {
+	                return Integer.compare(outdegree2, outdegree1); // Sort by outdegree (descending)
+	            } else {
+	                return abbrev1.compareToIgnoreCase(abbrev2); // Sort alphabetically by abbreviation
+	            }
+	        });
+	        // Print nodes outdegree
+	        System.out.println("\nOutdegree");
+	        output.println("\nOutdegree: ");
+	        for (Node node : nodeList) {
 	            int outdegree = outdegreeMap.get(node);
 	            String abbreviation = node.getAbbrev();
-	            System.out.printf("Node %s has %d/%d %d.%n", abbreviation, indegree, outdegree, node.getDegree());
-	            output.println("Node "+abbreviation+" has "+indegree+"/"+outdegree+" "+node.getDegree()+".%n");//Prints to file
-	            
+	            System.out.printf("Node %s has outdegree %d\n", abbreviation, outdegree);
+	            output.println("Node "+abbreviation+" has outdegree "+outdegree);//Prints to file    
 	        }
 	        
 		}else {
