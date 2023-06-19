@@ -56,12 +56,17 @@ public class DelivA {
 	        nodeList.sort((node1, node2) -> {
 	            int indegree1 = indegreeMap.get(node1);
 	            int indegree2 = indegreeMap.get(node2);
+	            int outdegree1 = outdegreeMap.get(node1);
+	            int outdegree2 = outdegreeMap.get(node2);
 	            String abbrev1 = node1.getAbbrev();
 	            String abbrev2 = node2.getAbbrev();
 
 	            if (indegree1 != indegree2) {
 	                return Integer.compare(indegree2, indegree1); // Sort by indegree (descending)
-	            } else {
+	            }else if (indegree1 != indegree2) {
+	                return Integer.compare(outdegree2, outdegree1); // Sort by outdegree (descending)
+	            }
+	            else {
 	                return abbrev1.compareToIgnoreCase(abbrev2); // Sort alphabetically by abbreviation
 	            }
 	        });
@@ -79,6 +84,8 @@ public class DelivA {
 	        
 	     // Sort nodes based on outdegree (descending) and abbreviation (ascending)
 	        nodeList.sort((node1, node2) -> {
+	        	int indegree1 = indegreeMap.get(node1);
+	            int indegree2 = indegreeMap.get(node2);
 	            int outdegree1 = outdegreeMap.get(node1);
 	            int outdegree2 = outdegreeMap.get(node2);
 	            String abbrev1 = node1.getAbbrev();
@@ -86,7 +93,9 @@ public class DelivA {
 
 	            if (outdegree1 != outdegree2) {
 	                return Integer.compare(outdegree2, outdegree1); // Sort by outdegree (descending)
-	            } else {
+	            }else if (indegree1 != outdegree2) {
+	                return Integer.compare(indegree2, indegree1); // Sort by indegree (descending)
+	            }else {
 	                return abbrev1.compareToIgnoreCase(abbrev2); // Sort alphabetically by abbreviation
 	            }
 	        });
