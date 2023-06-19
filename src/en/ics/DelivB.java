@@ -86,7 +86,7 @@ public class DelivB {
 	
 	
 	/**
-	 * Fucntion to visit a node
+	 * Function to visit a node
 	 * @param node
 	 */
 	private void dfsVisit(Node node) {

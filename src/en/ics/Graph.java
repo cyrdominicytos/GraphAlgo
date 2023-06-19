@@ -27,5 +27,19 @@ public class Graph {
 		edgeList.add(e);
 	}
 	
+	/**
+	 * Get the node that has the specify value
+	 * @return the related node
+	 */
+	public Node getStartedNode(String value) {
+		 for(Node node : this.getNodeList()) {
+	            if (node.getValue()!=null && node.getValue().equals(value)) {
+	                return node;
+	            }
+	        }
+		 return null;
+	}
+	
+	
 }
 
