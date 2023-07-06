@@ -1,6 +1,7 @@
 package en.ics;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -42,7 +43,7 @@ public class DelivC{
 	//*********************************************************************************
 	//               This is where your work starts
 	int totalVisitedNode = 0;
-	 int totalCost = 0; // To store the total cost of the MST
+	int totalCost = 0; // To store the total cost of the MST
 	// Create a new graph to store the minimum spanning tree
     Graph mst = new Graph();
     ArrayList<Edge> edgeQueue = new ArrayList<>();
@@ -52,8 +53,8 @@ public class DelivC{
 	    Node startNode = graph.getStartedNode("S");
 	    
 	    if (startNode == null) {
-	        System.out.println("No node with value 'S' found.");
-	        output.println("No node with value 'S' found.");
+	        System.out.println("There is no node with value 'S' found.");
+	        output.println("There is no node with value 'S' found.");
 	        return;
 	    }
 	    
@@ -62,21 +63,28 @@ public class DelivC{
 	    edgeQueue.addAll(startNode.getOutgoingEdges());
 	    
 	    // Add the start node to the visited set
-	    //visitedNodes.add(startNode);
 	    startNode.setVisited(true);
 	    totalVisitedNode++;
 	    
 	    
 	    // Iterate until all nodes are visited or the edge queue is empty
 	    while (!edgeQueue.isEmpty() && totalVisitedNode < graph.getNodeList().size()) {
+	    	
+	    	
 	    	 // Sort edges by distance, breaking ties alphabetically
-		 	edgeQueue.sort((edge1, edge2) -> {
-	        	if (edge1.getDistance() != edge2.getDistance()) {
-	                return Integer.compare(edge1.getDistance(), edge2.getDistance());
-	            } else {
-	                return edge1.getHead().getName().compareToIgnoreCase(edge2.getHead().getName());
-	            }
-	        });
+	    	Collections.sort(edgeQueue, new Comparator<Edge>() {
+				@Override
+				public int compare(Edge edge1, Edge edge2) {
+					if (edge1.getDistance() != edge2.getDistance()) {
+		                return Integer.compare(edge1.getDistance(), edge2.getDistance());
+		            } else {
+		                return edge1.getHead().getName().compareToIgnoreCase(edge2.getHead().getName());
+		            }
+				}
+	    		
+	    	});
+	    	    
+		 	
 	        // Get the edge with the minimum weight from the queue
 	        Edge minEdge = edgeQueue.remove(0);
 	        
