@@ -119,6 +119,17 @@ public class DelivC{
 	    }
 	    
 	}
+	
+	/*private Edge getShortestOutgoingEdge(Node node) {
+		 // Sort edges by distance, breaking ties alphabetically
+    	Collections.sort(node.getOutgoingEdges(), new Comparator<Edge>() {
+			@Override
+			public int compare(Edge edge1, Edge edge2) {
+	            return Integer.compare(edge1.getDistance(), edge2.getDistance());
+			}
+    		
+    	});
+	}*/
 
 }
 
