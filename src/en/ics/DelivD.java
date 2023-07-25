@@ -33,7 +33,7 @@ public class DelivD {
 		}
 		
 		// Calls the method that will do the work of deliverable D
-		runDelivD();
+		run();
 
 		output.flush();
 	}
@@ -42,11 +42,233 @@ public class DelivD {
 	//               This is where your work starts
 	
 	
+	private void run() {
+        // RÃ©cupÃ©rer la liste des nÅ“uds triÃ©s par valeur (nombre Ã  virgule flottante)
+        List<Node> sortedNodes = new ArrayList<>(graph.getNodeList());
+        sortedNodes.sort(Comparator.comparingDouble(node -> Double.parseDouble(node.getValue())));
+
+        // Trouver le nÅ“ud de dÃ©part (avec le plus grand nombre) et initialiser la variable de circuit
+        Node startNode = sortedNodes.get(sortedNodes.size() - 1);
+        List<Node> circuit = new ArrayList<>();
+        circuit.add(startNode);
+        startNode.setVisited(true);
+
+        // Trouver le nÅ“ud de valeur la plus basse (au milieu du circuit)
+        Node minNode = sortedNodes.get(sortedNodes.size() / 2);
+        circuit.add(minNode);
+        minNode.setVisited(true);
+
+        // Remplir le circuit en allant vers les nÅ“uds de valeurs dÃ©croissantes (Ã  gauche du nÅ“ud de valeur la plus basse)
+        for (int i = sortedNodes.size() / 2 - 1; i >= 0; i--) {
+            Node node = sortedNodes.get(i);
+            if (!node.isVisited()) {
+                circuit.add(node);
+                node.setVisited(true);
+            }
+        }
+
+        // Remplir le circuit en revenant aux nÅ“uds de valeurs croissantes (Ã  droite du nÅ“ud de valeur la plus basse)
+        for (int i = sortedNodes.size() / 2 + 1; i < sortedNodes.size(); i++) {
+            Node node = sortedNodes.get(i);
+            if (!node.isVisited()) {
+                circuit.add(node);
+                node.setVisited(true);
+            }
+        }
+
+        // Afficher le circuit obtenu
+        for (Node node : circuit) {
+            output.println(node.getAbbrev());
+        }
+    }
+
+	    
+	
+
+
+	ArrayList<Node> nodeList = new ArrayList<>();
+    ArrayList<Node> bitonicTour = new ArrayList<>();
+	private void runDeliv() {
+		nodeList = graph.getNodeList();
+		System.out.println("runDeliv Called...");
+		   // Get the list of nodes from the graph
+		    
+
+		    // Tri des nï¿½uds en fonction de leur valeur (latitude ou longitude) dans l'ordre dï¿½croissant
+		    Collections.sort(nodeList, new Comparator<Node>() {
+		        @Override
+		        public int compare(Node n1, Node n2) {
+		            return Double.compare(Double.parseDouble(n2.getValue()), Double.parseDouble(n1.getValue()));
+		        }
+		    });
+		    
+		    //Start at the city with the highest number
+		    Node currentNode = nodeList.get(0);
+		    //bitonicTour.add(currentNode);
+		    int i =0;
+		    while(currentNode!=null && !currentNode.equals(nodeList.get(nodeList.size()-1))) {
+		    	/*if(currentNode.getAbbrev().equals("M")) {
+		    		for (Edge e : currentNode.getOutgoingEdges()) {
+				        System.out.print(e.getHead().getAbbrev() + " - ");
+				    }
+		    	}*/
+		    	bitonicTour.add(currentNode);
+		    	currentNode =  goToLowestNode(currentNode);
+		    	//break;
+		    	 //System.out.print(currentNode.getAbbrev() + " -> ");
+		    	//bitonicTour.add(currentNode);
+		    	
+		    	
+		    	
+		    	/*if(currentNode.getAbbrev().equals("C")) {
+		    		for (Edge e : currentNode.getOutgoingEdges()) {
+				        System.out.print(e.getHead().getAbbrev() + " -> ");
+				    }
+		    		break;
+		    	}*/
+		    	
+		    }
+		    
+		    
+		    while(currentNode!=null && !currentNode.equals(nodeList.get(0))) {
+		    	/*if(currentNode.getAbbrev().equals("M")) {
+		    		for (Edge e : currentNode.getOutgoingEdges()) {
+				        System.out.print(e.getHead().getAbbrev() + " - ");
+				    }
+		    	}*/
+		    	bitonicTour.add(currentNode);
+		    	currentNode =  goToHighestNode(currentNode);
+		    	//break;
+		    	 //System.out.print(currentNode.getAbbrev() + " -> ");
+		    	
+		    	
+		    	
+		    	
+		    	/*if(currentNode.getAbbrev().equals("C")) {
+		    		for (Edge e : currentNode.getOutgoingEdges()) {
+				        System.out.print(e.getHead().getAbbrev() + " -> ");
+				    }
+		    		break;
+		    	}*/
+		    	
+		    }
+		    
+		    
+		   
+		    for (Edge e : graph.getEdgeList()) {
+		        System.out.print(e.getHead().getAbbrev() +e.getTail().getAbbrev() + e.getDistance()+" :: ");
+		    }
+		    
+		    double distance = calculateDistance(bitonicTour);
+		    
+		    System.out.println("Distance du plus court chemin bitonique : " + distance);
+		    System.out.println("Ordre des villes dans le chemin : ");
+		    for (Node node : bitonicTour) {
+		        System.out.print(node.getAbbrev() +node.getValue()+ " -> ");
+		    }
+	
+	}
+	
+	private Node getNearestEstNode(Node node) {
+			
+		if(node.getOutgoingEdges().size()==0)
+			return null; 
+		
+			Collections.sort(node.getOutgoingEdges(), new Comparator<Edge>() {
+				@Override
+				public int compare(Edge edge1, Edge edge2) {
+					double val1 = Double.parseDouble(edge1.getHead().getValue());
+					double val2 = Double.parseDouble(edge2.getHead().getValue());
+					
+					if(val2!=val1) {
+						 return Double.compare(val2, val1);
+					}else {
+						return Integer.compare(edge1.getDistance(), edge2.getDistance());
+					}
+				}
+		    });
+			
+			for(Edge e : node.getOutgoingEdges())
+				if(!bitonicTour.contains(e.getHead()))
+					return e.getHead();
+			
+			return null;
+	}
+	
+	
+	private Node goToLowestNode(Node node) {
+		
+		if(node.getOutgoingEdges().size()==0)
+			return null; 
+		
+			Collections.sort(node.getIncomingEdges(), new Comparator<Edge>() {
+				@Override
+				public int compare(Edge edge1, Edge edge2) {
+					double val1 = Double.parseDouble(edge1.getHead().getValue());
+					double val2 = Double.parseDouble(edge2.getHead().getValue());
+					//return Double.compare(val2, val1);
+					
+					/*if(edge1.getDistance()!= edge2.getDistance()) {
+						return Integer.compare(edge1.getDistance(), edge2.getDistance());
+					}else {
+						 return Double.compare(val2, val1);
+					}*/
+					return Double.compare(val2, val1);
+					/*if(val2!=val1) {
+						return Double.compare(val2, val1);
+					}else {
+						return Integer.compare(edge1.getDistance(), edge2.getDistance());
+					}*/
+				}
+		    });
+			
+			for(Edge e : node.getOutgoingEdges())
+				if(!bitonicTour.contains(e.getHead()))
+					return e.getHead();
+			
+			return null;
+	}
+	
+	
+private Node goToHighestNode(Node node) {
+		
+		if(node.getOutgoingEdges().size()==0)
+			return null; 
+		
+			Collections.sort(node.getIncomingEdges(), new Comparator<Edge>() {
+				@Override
+				public int compare(Edge edge1, Edge edge2) {
+					double val1 = Double.parseDouble(edge1.getHead().getValue());
+					double val2 = Double.parseDouble(edge2.getHead().getValue());
+					//return Double.compare(val1, val2);
+					/*if(val2!=val1) {
+						 return Double.compare(val1, val2);
+					}else {
+						return Integer.compare(edge1.getDistance(), edge2.getDistance());
+					}*/
+					
+					if(edge1.getDistance()!= edge2.getDistance()) {
+						return Integer.compare(edge1.getDistance(), edge2.getDistance());
+					}else {
+						 return Double.compare(val1, val2);
+					}
+				}
+		    });
+			
+			for(Edge e : node.getOutgoingEdges())
+				if(!bitonicTour.contains(e.getHead()))
+					return e.getHead();
+			
+			return null;
+	}
+	
+	
+	
 	private void runDelivD() {
 	    // Get the list of nodes from the graph
 	   /* ArrayList<Node> nodeList = graph.getNodeList();
 
-	    // Tri des nœuds en fonction de leur valeur (latitude ou longitude) dans l'ordre décroissant
+	    // Tri des nï¿½uds en fonction de leur valeur (latitude ou longitude) dans l'ordre dï¿½croissant
 	    Collections.sort(nodeList, new Comparator<Node>() {
 	        @Override
 	        public int compare(Node n1, Node n2) {
@@ -87,7 +309,7 @@ public class DelivD {
     public List<Node> shortestBitonicTour2(Node startNode, Node endNode) {
         List<Node> bitonicTour = new ArrayList<>();
 
-        // Tri des nœuds en fonction de leur valeur (latitude ou longitude)
+        // Tri des nï¿½uds en fonction de leur valeur (latitude ou longitude)
         // Sort nodes by value in descending order
     	Collections.sort(graph.getNodeList(), new Comparator<Node>() {	
 			@Override
@@ -103,7 +325,7 @@ public class DelivD {
 
         // Construction du chemin bitonique en combinant les chemins forward et reverse
         bitonicTour.addAll(forwardPath);
-        reversePath.remove(0); // On enlève le premier nœud car il sera présent deux fois dans le chemin bitonique
+        reversePath.remove(0); // On enlï¿½ve le premier nï¿½ud car il sera prï¿½sent deux fois dans le chemin bitonique
         bitonicTour.addAll(reversePath);
 
         return bitonicTour;
@@ -118,7 +340,7 @@ public class DelivD {
     	    // Recherche du chemin le plus court entre startNode et endNode en suivant l'autre direction
     	    List<Node> reversePath = Dijkstra.shortestPath(graph, endNode, startNode);
 
-    	    // Si le chemin reversePath est plus court que le chemin forwardPath, on les échange
+    	    // Si le chemin reversePath est plus court que le chemin forwardPath, on les ï¿½change
     	    if (calculateDistance(reversePath) < calculateDistance(forwardPath)) {
     	        List<Node> temp = forwardPath;
     	        forwardPath = reversePath;
@@ -127,7 +349,7 @@ public class DelivD {
 
     	    // Construction du chemin bitonique en combinant les chemins forward et reverse
     	    bitonicTour.addAll(forwardPath);
-    	    bitonicTour.remove(bitonicTour.size() - 1); // On enlève le dernier nœud car il sera présent deux fois dans le chemin bitonique
+    	    bitonicTour.remove(bitonicTour.size() - 1); // On enlï¿½ve le dernier nï¿½ud car il sera prï¿½sent deux fois dans le chemin bitonique
     	    bitonicTour.addAll(reversePath);
 
     	    return bitonicTour;
@@ -137,20 +359,20 @@ public class DelivD {
     public List<Node> shortestBitonicTour(Node startNode, Node endNode) {
         List<Node> bitonicTour = new ArrayList<>();
 
-        // Trouver le nœud le plus à l'ouest et le plus à l'est
+        // Trouver le nï¿½ud le plus ï¿½ l'ouest et le plus ï¿½ l'est
         Node westmostNode = getWestmostNode();
         Node eastmostNode = getEastmostNode();
 
         // Trouver le plus court chemin d'ouest en est (ou d'est en ouest)
         List<Node> shortestPath = Dijkstra.shortestPath(graph, westmostNode, eastmostNode);
 
-        // Ajouter tous les nœuds restants qui n'appartiennent pas au chemin direct
+        // Ajouter tous les nï¿½uds restants qui n'appartiennent pas au chemin direct
         List<Node> remainingNodes = new ArrayList<>(graph.getNodeList());
         remainingNodes.removeAll(shortestPath);
         int indexOfEastmostNode = shortestPath.indexOf(eastmostNode);
         shortestPath.addAll(indexOfEastmostNode + 1, remainingNodes);
 
-        // Trouver le plus court chemin du nœud le plus à l'est au nœud de départ
+        // Trouver le plus court chemin du nï¿½ud le plus ï¿½ l'est au nï¿½ud de dï¿½part
         List<Node> returnPath = Dijkstra.shortestPath(graph, eastmostNode, startNode);
 
         // Construction du chemin bitonique complet
@@ -160,7 +382,7 @@ public class DelivD {
         return bitonicTour;
     }
 
-    // Méthode pour trouver le nœud le plus à l'ouest (ou le plus au nord, selon le fichier)
+    // Mï¿½thode pour trouver le nï¿½ud le plus ï¿½ l'ouest (ou le plus au nord, selon le fichier)
     private Node getWestmostNode() {
         Node westmostNode = graph.getNodeList().get(0);
         for (Node node : graph.getNodeList()) {
@@ -171,7 +393,7 @@ public class DelivD {
         return westmostNode;
     }
 
-    // Méthode pour trouver le nœud le plus à l'est (ou le plus au sud, selon le fichier)
+    // Mï¿½thode pour trouver le nï¿½ud le plus ï¿½ l'est (ou le plus au sud, selon le fichier)
     private Node getEastmostNode() {
         Node eastmostNode = graph.getNodeList().get(0);
         for (Node node : graph.getNodeList()) {

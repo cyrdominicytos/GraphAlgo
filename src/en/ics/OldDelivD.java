@@ -50,6 +50,8 @@ public class OldDelivD {
 			System.out.println(e.getTail().getAbbrev().concat("-").concat(e.getHead().getAbbrev().concat(e.getTail().getValue()).concat("/").concat(e.getHead().getValue())));
 		}
 	}
+	
+	
 	private void run() {
 		ArrayList<Node> bitonicList = new ArrayList<>();
 		// Get the list of nodes from the graph
@@ -84,6 +86,8 @@ public class OldDelivD {
         }
     	
 	}
+	
+	
 	private void runDelivD() {
 		
 		// Get the list of nodes from the graph
@@ -143,7 +147,7 @@ public class OldDelivD {
     public List<Node> shortestBitonicTour(Node startNode, Node endNode) {
         List<Node> bitonicTour = new ArrayList<>();
 
-        // Tri des nœuds en fonction de leur valeur (latitude ou longitude)
+        // Tri des nï¿½uds en fonction de leur valeur (latitude ou longitude)
         // Sort nodes by value in descending order
     	Collections.sort(graph.getNodeList(), new Comparator<Node>() {	
 			@Override
@@ -159,7 +163,7 @@ public class OldDelivD {
 
         // Construction du chemin bitonique en combinant les chemins forward et reverse
         bitonicTour.addAll(forwardPath);
-        reversePath.remove(0); // On enlève le premier nœud car il sera présent deux fois dans le chemin bitonique
+        reversePath.remove(0); // On enlï¿½ve le premier nï¿½ud car il sera prï¿½sent deux fois dans le chemin bitonique
         bitonicTour.addAll(reversePath);
 
         return bitonicTour;
