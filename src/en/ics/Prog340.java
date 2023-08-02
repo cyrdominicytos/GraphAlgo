@@ -134,7 +134,7 @@ public class Prog340 extends JPanel /*implements ActionListener*/ {
 
 		delivD.addActionListener( new ActionListener() {
 		public void actionPerformed( ActionEvent e ) {
-			new DelivD( inputFile, g);
+			new Deliv( inputFile, g);
 		}
 	});
 		

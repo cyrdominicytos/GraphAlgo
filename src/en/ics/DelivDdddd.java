@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class DelivD {
+public class DelivDdddd {
 
 	private File inputFile;
 	private File outputFile;
@@ -14,7 +14,7 @@ public class DelivD {
 	private Graph graph;
 
 	//Constructor - DO NOT MODIFY
-	public DelivD(File in, Graph gr) {
+	public DelivDdddd(File in, Graph gr) {
 		inputFile = in;
 		graph = gr;
 
@@ -45,107 +45,113 @@ public class DelivD {
 	
 	ArrayList<Node> nodeList = new ArrayList<>();
     ArrayList<Node> bitonicTour = new ArrayList<>();
-	private void runDeliv() {
-		nodeList = graph.getNodeList();
-		//System.out.println("runDeliv Called...hgogy");
-		   // Get the list of nodes from the graph
-		    
-		    // sort nodes by values
-		    Collections.sort(nodeList, new Comparator<Node>() {
-		        @Override
-		        public int compare(Node n1, Node n2) {
-		            return Double.compare(Double.parseDouble(n2.getValue()), Double.parseDouble(n1.getValue()));
-		        }
-		    });
-		    
-		    //Start at the city with the highest number
-		    Node currentNode = nodeList.get(0);
-		    
-		    // First traversal
-		    while(currentNode!=null && !currentNode.equals(nodeList.get(nodeList.size()-1))) {
-		    	bitonicTour.add(currentNode);
-		    	currentNode.setVisited(true);
-		    	currentNode =  goToLowestNode(currentNode);
-		    }
-		   
-		    // Back traversal
-		    while(currentNode!=null && !currentNode.equals(nodeList.get(0))) 
-		    {
-		    	bitonicTour.add(currentNode);
-		    	currentNode.setVisited(true);
-		    	currentNode =  goToHighestNode(currentNode);
-		    	
-		    }
 	
-		    //add the started node at the end
-		    bitonicTour.add(nodeList.get(0));
-		    double distance = calculateDistance(bitonicTour);
-		    
-		    System.out.println("Shortest bitonic tour has distance : " + distance);
-		    System.out.println("Tour is  : ");
-		    for (Node node : bitonicTour) {
-		        System.out.print(node.getAbbrev()+ "-> ");
-		    }
-	
-	}
-	
+ // ... (existing code)
 
-	
-	private Node goToLowestNode(Node node) {
-		
-		if(node.getOutgoingEdges().size()==0)
-			return null; 
-		
-			Collections.sort(node.getOutgoingEdges(), new Comparator<Edge>() {
-				@Override
-				public int compare(Edge edge1, Edge edge2) {
-					double val1 = Double.parseDouble(edge1.getHead().getValue());
-					double val2 = Double.parseDouble(edge2.getHead().getValue());
-					return Double.compare(val1, val2);
-				}
-		    });
-			
-			
-			if(node.equals(nodeList.get(0)) && nodeList.size() > 2 && node.getOutgoingEdges().get(0).getHead().equals(nodeList.get(nodeList.size()-1)))
-			{
-				return  node.getOutgoingEdges().get(1).getHead();
-				
-			}else {
-				for(Edge e : node.getOutgoingEdges())
-					if(!e.getHead().isVisited())
-						return e.getHead();
-			}
-							
-			return null;
-	}
-	
-	
-	private Node goToHighestNode(Node node) {
-		
-		if(node.getOutgoingEdges().size()==0)
-			return null; 
-		
-			Collections.sort(node.getIncomingEdges(), new Comparator<Edge>() {
-				@Override
-				public int compare(Edge edge1, Edge edge2) {
-					double val1 = Double.parseDouble(edge1.getHead().getValue());
-					double val2 = Double.parseDouble(edge2.getHead().getValue());
-					
-					if(edge1.getDistance()!= edge2.getDistance()) {
-						return Integer.compare(edge1.getDistance(), edge2.getDistance());
-					}else {
-						 return Double.compare(val1, val2);
-					}
-				}
-		    });
-			
-			for(Edge e : node.getOutgoingEdges())
-				if(!e.getHead().isVisited())
-					return e.getHead();
-			
-			return null;
-	}
-	
+ // Modify the runDeliv() method as follows:
+ private void runDeliv() {
+     nodeList = graph.getNodeList();
+     List<Node> decreasingPhase = new ArrayList<>();
+     List<Node> increasingPhase = new ArrayList<>();
+
+     // Sort the nodes in descending order
+     Collections.sort(nodeList, new Comparator<Node>() {
+         @Override
+         public int compare(Node n1, Node n2) {
+             return Double.compare(Double.parseDouble(n2.getValue()), Double.parseDouble(n1.getValue()));
+         }
+     });
+
+     // Start at the city with the highest number
+     Node currentNode = nodeList.get(0);
+
+     // Phase 1: Decreasing values
+     while (currentNode != null && !currentNode.equals(nodeList.get(nodeList.size() - 1))) {
+         decreasingPhase.add(currentNode);
+         currentNode.setVisited(true);
+         currentNode = goToLowestNode(currentNode);
+     }
+
+     // Phase 2: Increasing values
+     currentNode = nodeList.get(0); // Start again from the highest value node
+     while (currentNode != null && !currentNode.equals(decreasingPhase.get(decreasingPhase.size() - 1))) {
+         increasingPhase.add(currentNode);
+         currentNode.setVisited(true);
+         currentNode = goToHighestNode(currentNode);
+     }
+
+     // Combine both phases to get the complete bitonic tour
+     List<Node> bitonicTour = new ArrayList<>(decreasingPhase);
+     bitonicTour.addAll(increasingPhase);
+
+     double distance = calculateDistance(bitonicTour);
+
+     System.out.println("Distance du plus court chemin bitonique : " + distance);
+     System.out.println("Ordre des villes dans le chemin : ");
+     for (Node node : bitonicTour) {
+         System.out.print(node.getAbbrev() + node.getValue() + " -> ");
+     }
+ }
+
+ // ... (existing code)
+
+ // Modify the goToLowestNode() and goToHighestNode() methods as follows:
+
+ private Node goToLowestNode(Node node) {
+     if (node.getOutgoingEdges().isEmpty()) {
+         return null;
+     }
+
+     Collections.sort(node.getOutgoingEdges(), new Comparator<Edge>() {
+         @Override
+         public int compare(Edge edge1, Edge edge2) {
+             double val1 = Double.parseDouble(edge1.getHead().getValue());
+             double val2 = Double.parseDouble(edge2.getHead().getValue());
+             return Double.compare(val1, val2);
+         }
+     });
+
+     for (Edge e : node.getOutgoingEdges()) {
+         if (!e.getHead().isVisited()) {
+             return e.getHead();
+         }
+     }
+
+     return null;
+ }
+
+ private Node goToHighestNode(Node node) {
+     if (node.getOutgoingEdges().isEmpty()) {
+         return null;
+     }
+
+     Collections.sort(node.getIncomingEdges(), new Comparator<Edge>() {
+         @Override
+         public int compare(Edge edge1, Edge edge2) {
+             double val1 = Double.parseDouble(edge1.getHead().getValue());
+             double val2 = Double.parseDouble(edge2.getHead().getValue());
+
+             if (edge1.getDistance() != edge2.getDistance()) {
+                 return Integer.compare(edge1.getDistance(), edge2.getDistance());
+             } else {
+                 return Double.compare(val1, val2);
+             }
+         }
+     });
+
+     for (Edge e : node.getIncomingEdges()) {
+         if (!e.getHead().isVisited()) {
+             return e.getHead();
+         }
+     }
+
+     return null;
+ }
+
+
+    
+
+    
 	private int distance(Node node1, Node node2) {
 	    
 		for(Edge e :graph.getEdgeList()) {
@@ -178,6 +184,29 @@ public class DelivD {
     }
     
    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
  
 
 	 /*
